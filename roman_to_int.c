@@ -49,6 +49,7 @@ It is guaranteed that s is a valid roman numeral in the range [1, 3999].
 #include <stdio.h>
 
 
+// :TODO: IV is 4 not 6 fix that read problem again
 int romanToInt(char* s) {
     int result = 0;
     char keys[7] = {'I', 'V', 'X', 'L', 'C', 'D', 'M'};
