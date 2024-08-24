@@ -49,31 +49,92 @@ It is guaranteed that s is a valid roman numeral in the range [1, 3999].
 #include <stdio.h>
 
 
-// :TODO: IV is 4 not 6 fix that read problem again
+// Without using hashmap which is faster than normal arrays
 int romanToInt(char* s) {
     int result = 0;
     char keys[7] = {'I', 'V', 'X', 'L', 'C', 'D', 'M'};
     int values[7] = {1, 5, 10, 50, 100, 500, 1000};
 
-    int count = 0;
-    int index = 0;
-    int value = 0;
+    int count = 0, finalValue, index = 0, nextKeyIndex = 0, value = 0;
+    char nextKey, key;
 
     while (s[count] != '\0')
     {
-        char key = s[count];
+        key = s[count];
         
         for (int i = 0; i < 7; i++)
         {
             if (key == keys[i])
             {
                 index = i;
+                break;
             }
             
         }
         
         value = values[index];
         result += value;
+
+        if (s[count+1] == '\0')
+        {
+            count++;
+            continue;
+        }
+        
+        nextKey = s[count+1];
+
+        // I can be placed before V (5) and X (10) to make 4 and 9. 
+        // X can be placed before L (50) and C (100) to make 40 and 90. 
+        // C can be placed before D (500) and M (1000) to make 400 and 900.
+        if (key == 'I' && (nextKey == 'V' || nextKey == 'X'))
+        {
+           for (int i = 0; i < 7; i++)
+            {
+                if (nextKey == keys[i])
+                {
+                    nextKeyIndex = i;
+                    break;
+                }
+                
+            }
+            finalValue = values[nextKeyIndex] - values[index];
+            result = result - value + finalValue;
+            count++;
+        }
+        
+        if (key == 'X' && (nextKey == 'L' || nextKey == 'C'))
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                if (nextKey == keys[i])
+                {
+                    nextKeyIndex = i;
+                    break;
+                }
+                
+            }
+            finalValue = values[nextKeyIndex] - values[index];
+            result = result - value + finalValue;
+            count++;
+        }
+
+        if (key == 'C' && (nextKey == 'D' || nextKey == 'M'))
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                if (nextKey == keys[i])
+                {
+                    nextKeyIndex = i;
+                    break;
+                }
+                
+            }
+            finalValue = values[nextKeyIndex] - values[index];
+            result = result - value + finalValue;
+            count++;
+        }
+
+
         count++;
     }
         
@@ -84,7 +145,7 @@ int romanToInt(char* s) {
 
 int main(int argc, char const *argv[])
 {
-    char * s = "LVIII";
+    char * s = "MCMXCIV";
     int val = romanToInt(s);
 
     printf("%d\n", val);
